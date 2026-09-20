@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Last Sip app</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&amp;family=Figtree:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FAF5EA}
+button{font:inherit;color:inherit;cursor:pointer}
+button:disabled{cursor:not-allowed}
+input{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid #1E5B45;outline-offset:2px}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #FAF5EA; color: #1F2A24; font-family: 'Figtree', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden;">
+
+<sc-if value="{{showWelcome}}" hint-placeholder-val="{{ true }}">
+<div style="flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 28px 24px 32px; box-sizing: border-box; gap: 16px; border-radius: 2px">
+<div style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 24px; letter-spacing: -0.01em;">Last Sip</div>
+<div style="flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center;">
+<svg width="230" height="230" viewBox="0 0 220 220" role="img" aria-label="A glass with only a little milk left">
+<circle cx="110" cy="116" r="92" fill="#F4B93E"></circle>
+<polygon points="66,50 154,50 142,178 78,178" fill="#FFFDF8" fill-opacity="0.45" stroke="#1F2A24" stroke-width="4" stroke-linejoin="round"></polygon>
+<polygon points="75.4,150 144.6,150 142,178 78,178" fill="#FFFDF8" stroke="#1F2A24" stroke-width="4" stroke-linejoin="round"></polygon>
+<line x1="130" y1="26" x2="106" y2="142" stroke="#1F2A24" stroke-width="5" stroke-linecap="round"></line>
+<circle cx="96" cy="166" r="3.5" fill="none" stroke="#1F2A24" stroke-width="2"></circle>
+<circle cx="118" cy="160" r="2.5" fill="none" stroke="#1F2A24" stroke-width="2"></circle>
+<line x1="166" y1="70" x2="180" y2="62" stroke="#1F2A24" stroke-width="3.5" stroke-linecap="round"></line>
+<line x1="170" y1="88" x2="186" y2="88" stroke="#1F2A24" stroke-width="3.5" stroke-linecap="round"></line>
+<line x1="166" y1="106" x2="180" y2="114" stroke="#1F2A24" stroke-width="3.5" stroke-linecap="round"></line>
+</svg>
+</div>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 40px; line-height: 1.02; letter-spacing: -0.02em; text-wrap: balance;">We'll tell you before the milk runs out.</h1>
+<p style="margin: 0; font-size: 17px; line-height: 1.45; color: #4A544D;">One friendly email, whichever grocery app you order from.</p>
+</div>
+<sc-if value="{{deleted}}" hint-placeholder-val="{{ false }}">
+<div style="background: #E6EFE6; border-radius: 14px; padding: 12px 14px; font-size: 15px; line-height: 1.4;">Done. Your items and email address are deleted.</div>
+</sc-if>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<button type="button" onClick="{{onGoogle}}" style="height: 56px; border-radius: 16px; border: 1.5px solid #1F2A24; background: #FFFDF8; font-size: 17px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 0 16px;"><span aria-hidden="true" style="width: 26px; height: 26px; border-radius: 13px; background: #1F2A24; color: #FAF5EA; font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center;">G</span>Continue with Google</button>
+<p style="margin: 0; font-size: 14px; line-height: 1.4; color: #5B655E; text-align: center;">We read only your name and email address. Never your inbox.</p>
+<button type="button" onClick="{{onReturning}}" style="min-height: 44px; border: none; background: transparent; color: #1E5B45; font-size: 14px; font-weight: 700; text-decoration: underline;">Prototype: see it as a returning user</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{showFlow}}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1; min-height: 0; display: flex; flex-direction: column;">
+<div style="padding: 16px 20px 8px; display: flex; flex-direction: column; gap: 14px;">
+<div style="display: flex; align-items: center; justify-content: space-between;">
+<button type="button" aria-label="Back" onClick="{{onBack}}" style="width: 44px; height: 44px; border-radius: 22px; border: 1.5px solid #E2D9C3; background: #FFFDF8; display: flex; align-items: center; justify-content: center; padding: 0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 5 8 12 15 19"></polyline></svg></button>
+<div style="font-size: 14px; font-weight: 600; color: #5B655E;">{{stepLabel}}</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px;">
+<sc-for list="{{segs}}" as="seg" hint-placeholder-count="4">
+<div style="height: 5px; border-radius: 3px; background: {{seg.bg}};"></div>
+</sc-for>
+</div>
+</div>
+
+<div style="flex: 1; min-height: 0; overflow-y: auto; padding: 12px 20px 24px; display: flex; flex-direction: column; gap: 20px;">
+
+<sc-if value="{{isHousehold}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 32px; line-height: 1.08; letter-spacing: -0.02em;">Who are we stocking up for?</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.45; color: #4A544D;">Bigger households run out faster. We use this to guess how long things last.</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;">
+<sc-for list="{{sizeCards}}" as="c" hint-placeholder-count="4">
+<button type="button" aria-pressed="{{c.on}}" onClick="{{c.pick}}" style="height: 132px; border-radius: 20px; border: 1.5px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 16px; text-align: left;">
+<span style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 44px; line-height: 1; letter-spacing: -0.02em;">{{c.num}}</span>
+<span style="font-size: 16px; font-weight: 600;">{{c.cap}}</span>
+</button>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{isItems}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 32px; line-height: 1.08; letter-spacing: -0.02em;">What do you keep running out of?</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.45; color: #4A544D;">Pick the everyday things you buy again and again. Rarely bought stuff isn't on this list.</p>
+</div>
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="5">
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B655E;">{{g.cat}}</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px;">
+<sc-for list="{{g.chips}}" as="chip" hint-placeholder-count="5">
+<button type="button" aria-pressed="{{chip.selected}}" onClick="{{chip.toggle}}" style="min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1.5px solid {{chip.bd}}; background: {{chip.bg}}; color: {{chip.fg}}; font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+<sc-if value="{{chip.selected}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12.5 10 17.5 19 7"></polyline></svg></sc-if>{{chip.name}}</button>
+</sc-for>
+<sc-if value="{{g.notAdding}}" hint-placeholder-val="{{ true }}">
+<button type="button" aria-label="{{g.addLabel}}" onClick="{{g.onOpen}}" style="min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1.5px dashed #8A9088; background: transparent; color: #1E5B45; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><line x1="12" y1="5" x2="12" y2="19"></line></svg>Add item</button>
+</sc-if>
+</div>
+<sc-if value="{{g.isAdding}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: center; gap: 8px;">
+<input type="text" aria-label="{{g.addLabel}}" placeholder="Item name" value="{{g.draft}}" onInput="{{g.onDraft}}" style="flex: 1; min-width: 0; height: 44px; border-radius: 12px; border: 1.5px solid #D9CFB6; background: #FFFDF8; padding: 0 14px; font-size: 16px; box-sizing: border-box;">
+<button type="button" disabled="{{g.addDisabled}}" onClick="{{g.onAdd}}" style="height: 44px; padding: 0 18px; border-radius: 12px; border: none; background: {{g.addBg}}; color: #FFFFFF; font-size: 15px; font-weight: 700;">Add</button>
+<button type="button" aria-label="Cancel" onClick="{{g.onCancel}}" style="width: 44px; height: 44px; border-radius: 22px; border: 1.5px solid #D9CFB6; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg></button>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</sc-if>
+
+<sc-if value="{{isPacks}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 32px; line-height: 1.08; letter-spacing: -0.02em;">How long does one pack last you?</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.45; color: #4A544D;">A rough guess is fine. We'll learn the real number from your taps. Can't wait items are marked urgent in your email.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 12px;">
+<sc-for list="{{packRows}}" as="r" hint-placeholder-count="4">
+<div style="background: #FFFDF8; border: 1.5px solid #E2D9C3; border-radius: 18px; padding: 14px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+<div style="font-size: 17px; font-weight: 700; line-height: 1.2; min-width: 0;">{{r.name}}</div>
+<div style="display: flex; align-items: center; flex-shrink: 0;">
+<button type="button" aria-label="Shorter" disabled="{{r.minusDis}}" onClick="{{r.onMinus}}" style="width: 44px; height: 44px; border-radius: 22px; border: 1.5px solid #D9CFB6; background: #FAF5EA; padding: 0; display: flex; align-items: center; justify-content: center; opacity: {{r.minusOp}};"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="12" x2="18" y2="12"></line></svg></button>
+<div style="width: 84px; text-align: center; font-size: 16px; font-weight: 700;">{{r.dur}}</div>
+<button type="button" aria-label="Longer" disabled="{{r.plusDis}}" onClick="{{r.onPlus}}" style="width: 44px; height: 44px; border-radius: 22px; border: 1.5px solid #D9CFB6; background: #FAF5EA; padding: 0; display: flex; align-items: center; justify-content: center; opacity: {{r.plusOp}};"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="6" y1="12" x2="18" y2="12"></line><line x1="12" y1="6" x2="12" y2="18"></line></svg></button>
+</div>
+</div>
+<sc-if value="{{r.isPet}}" hint-placeholder-val="{{ false }}">
+<input type="text" aria-label="Pet's name" placeholder="Pet's name" value="{{r.pet}}" onInput="{{r.onPet}}" style="height: 44px; border-radius: 12px; border: 1.5px solid #D9CFB6; background: #FAF5EA; padding: 0 14px; font-size: 16px; box-sizing: border-box; width: 100%;">
+</sc-if>
+<div style="display: flex; align-items: center; gap: 10px;">
+<button type="button" aria-pressed="{{r.cwOn}}" onClick="{{r.onCw}}" style="min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1.5px solid {{r.cwBd}}; background: {{r.cwBg}}; color: {{r.cwFg}}; font-size: 14px; font-weight: 700;">{{r.cwText}}</button>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{isApps}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 32px; line-height: 1.08; letter-spacing: -0.02em;">Where do you usually order?</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.45; color: #4A544D;">Order now opens this app, searching for the item.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B655E;">Favorite app</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px;">
+<sc-for list="{{mainChips}}" as="a" hint-placeholder-count="5">
+<button type="button" aria-pressed="{{a.on}}" onClick="{{a.pick}}" style="min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1.5px solid {{a.bd}}; background: {{a.bg}}; color: {{a.fg}}; font-size: 15px; font-weight: 600;">{{a.label}}</button>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B655E;">Backup app</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px;">
+<sc-for list="{{backupChips}}" as="a" hint-placeholder-count="5">
+<button type="button" aria-pressed="{{a.on}}" onClick="{{a.pick}}" style="min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1.5px solid {{a.bd}}; background: {{a.bg}}; color: {{a.fg}}; font-size: 15px; font-weight: 600;">{{a.label}}</button>
+</sc-for>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B655E;">How long can you wait to club items together?</div>
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<sc-for list="{{winOpts}}" as="w" hint-placeholder-count="3">
+<button type="button" aria-pressed="{{w.on}}" onClick="{{w.pick}}" style="border-radius: 16px; border: 1.5px solid {{w.bd}}; background: {{w.bg}}; padding: 12px 14px; display: flex; align-items: center; gap: 12px; text-align: left; min-height: 56px;">
+<span aria-hidden="true" style="width: 22px; height: 22px; border-radius: 11px; border: 2px solid {{w.ring}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><sc-if value="{{w.on}}" hint-placeholder-val="{{ false }}"><span style="width: 10px; height: 10px; border-radius: 5px; background: #1E5B45; display: block;"></span></sc-if></span>
+<span style="display: flex; flex-direction: column; gap: 2px;">
+<span style="font-size: 16px; font-weight: 700;">{{w.label}}</span>
+<span style="font-size: 14px; line-height: 1.35; color: #4A544D;">{{w.desc}}</span>
+</span>
+</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+</div>
+
+<div style="padding: 12px 20px 24px; border-top: 1.5px solid #E2D9C3; background: #FAF5EA;">
+<button type="button" disabled="{{ctaDisabled}}" onClick="{{onCta}}" style="width: 100%; height: 56px; border-radius: 16px; border: none; background: {{ctaBg}}; color: #FFFFFF; font-size: 17px; font-weight: 700;">{{ctaLabel}}</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{showHome}}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1; min-height: 0; overflow-y: auto; padding: 28px 20px 32px; display: flex; flex-direction: column; gap: 22px;">
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.01em;">Last Sip</div>
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 34px; line-height: 1.05; letter-spacing: -0.02em;">Welcome back</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.45; color: #4A544D;">Here's what we're watching for you.</p>
+</div>
+
+<div style="background: #F4B93E; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 6px;">
+<div style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;">{{homeLabel}}</div>
+<div style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 28px; line-height: 1.05; letter-spacing: -0.02em;">{{homeTitle}}</div>
+<div style="font-size: 16px; line-height: 1.4;">{{homeBody}}</div>
+<div style="font-size: 14px; line-height: 1.4; margin-top: 4px;">One email a day at most, never at night.</div>
+</div>
+
+<sc-if value="{{showLearned}}" hint-placeholder-val="{{ true }}">
+<div style="background: #E6EFE6; border-radius: 20px; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #1E5B45;">What we've learned</div>
+<div style="font-size: 17px; font-weight: 700; line-height: 1.3;">{{learnedText}}</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px;">
+<button type="button" onClick="{{onLearnYes}}" style="min-height: 44px; padding: 0 16px; border-radius: 12px; border: none; background: #1E5B45; color: #FFFFFF; font-size: 15px; font-weight: 700;">{{learnYesLabel}}</button>
+<button type="button" onClick="{{onLearnNo}}" style="min-height: 44px; padding: 0 16px; border-radius: 12px; border: 1.5px solid #1E5B45; background: transparent; color: #1E5B45; font-size: 15px; font-weight: 700;">{{learnNoLabel}}</button>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{showLearnedDone}}" hint-placeholder-val="{{ false }}">
+<div style="background: #E6EFE6; border-radius: 16px; padding: 14px; font-size: 15px; line-height: 1.4;">{{learnedDoneText}}</div>
+</sc-if>
+
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B655E;">Due soon</div>
+<sc-if value="{{noDue}}" hint-placeholder-val="{{ false }}">
+<div style="background: #FFFDF8; border: 1.5px solid #E2D9C3; border-radius: 16px; padding: 14px; font-size: 15px; line-height: 1.4; color: #4A544D;">Nothing is due right now. You're stocked up.</div>
+</sc-if>
+<sc-for list="{{dueRows}}" as="row" hint-placeholder-count="4">
+<div style="background: #FFFDF8; border: 1.5px solid #E2D9C3; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+<div style="font-size: 16px; font-weight: 700; min-width: 0;">{{row.name}}</div>
+<div style="flex-shrink: 0; padding: 4px 10px; border-radius: 12px; background: {{row.pillBg}}; color: {{row.pillFg}}; font-size: 12px; font-weight: 700;">{{row.pill}}</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+<div style="font-size: 14px; color: #5B655E; min-width: 0;">{{row.sub}}</div>
+<button type="button" onClick="{{row.onOrdered}}" style="flex-shrink: 0; min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1.5px solid #D9CFB6; background: #FAF5EA; font-size: 14px; font-weight: 700;">I've ordered</button>
+</div>
+</div>
+</sc-for>
+</div>
+
+<sc-if value="{{hasStocked}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B655E;">Stocked up</div>
+<div style="background: #FFFDF8; border: 1.5px solid #E2D9C3; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden;">
+<sc-for list="{{stockedRows}}" as="row" hint-placeholder-count="5">
+<div style="min-height: 48px; padding: 0 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: {{row.divider}};">
+<span style="font-size: 16px; font-weight: 600;">{{row.name}}</span>
+<span style="font-size: 14px; color: #5B655E; text-align: right;">{{row.when}}</span>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{hasPaused}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B655E;">Paused</div>
+<sc-for list="{{pausedRows}}" as="row" hint-placeholder-count="1">
+<div style="background: #FFFDF8; border: 1.5px solid #E2D9C3; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+<div style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+<div style="font-size: 16px; font-weight: 700;">{{row.name}}</div>
+<div style="font-size: 14px; color: #5B655E;">{{row.sub}}</div>
+</div>
+<button type="button" onClick="{{row.onResume}}" style="flex-shrink: 0; min-height: 44px; padding: 0 14px; border-radius: 12px; border: 1.5px solid #1E5B45; background: transparent; color: #1E5B45; font-size: 14px; font-weight: 700;">Turn back on</button>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<button type="button" onClick="{{onAddItem}}" style="min-height: 52px; border-radius: 14px; border: 1.5px dashed #8A9088; background: transparent; color: #1E5B45; font-size: 16px; font-weight: 700;">Add or remove items</button>
+
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B655E;">Your answers</div>
+<div style="background: #FFFDF8; border: 1.5px solid #E2D9C3; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden;">
+<sc-for list="{{settings}}" as="s" hint-placeholder-count="5">
+<button type="button" onClick="{{s.edit}}" style="min-height: 56px; border: none; border-bottom: {{s.divider}}; background: transparent; padding: 0 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; text-align: left;">
+<span style="font-size: 16px; font-weight: 700;">{{s.label}}</span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 15px; color: #4A544D;">{{s.value}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 5 16 12 9 19"></polyline></svg></span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B655E;">Privacy</div>
+<p style="margin: 0; font-size: 15px; line-height: 1.45; color: #4A544D;">We read only your name and email address, never your inbox. We keep the items you pick and the dates you tap.</p>
+<sc-if value="{{showDeleteBtn}}" hint-placeholder-val="{{ true }}">
+<button type="button" onClick="{{onAskDelete}}" style="height: 52px; border-radius: 14px; border: 1.5px solid #9C2E19; background: transparent; color: #9C2E19; font-size: 16px; font-weight: 700;">Delete my data</button>
+</sc-if>
+<sc-if value="{{showConfirm}}" hint-placeholder-val="{{ false }}">
+<div style="background: #FBE3DC; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 12px;">
+<div style="font-size: 15px; line-height: 1.4; font-weight: 600;">Delete your items, tap history and email address? This can't be undone.</div>
+<button type="button" onClick="{{onDelete}}" style="height: 52px; border-radius: 14px; border: none; background: #9C2E19; color: #FFFFFF; font-size: 16px; font-weight: 700;">Yes, delete everything</button>
+<button type="button" onClick="{{onKeep}}" style="height: 52px; border-radius: 14px; border: 1.5px solid #9C2E19; background: transparent; color: #9C2E19; font-size: 16px; font-weight: 700;">Keep my data</button>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{showPantry}}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1; min-height: 0; overflow-y: auto; padding: 28px 20px 32px; display: flex; flex-direction: column; gap: 22px;">
+<div style="display: flex; flex-direction: column; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 12px;">
+<button type="button" aria-label="Back" onClick="{{onPantryBack}}" style="width: 44px; height: 44px; border-radius: 22px; border: 1.5px solid #E2D9C3; background: #FFFDF8; display: flex; align-items: center; justify-content: center; padding: 0;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 5 8 12 15 19"></polyline></svg></button>
+<div style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.01em;">Last Sip</div>
+</div>
+<h1 style="margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 34px; line-height: 1.05; letter-spacing: -0.02em;">Your pantry</h1>
+<p style="margin: 0; font-size: 16px; line-height: 1.45; color: #4A544D;">Here's what we're watching, and when your first basket email goes out.</p>
+</div>
+
+<div style="background: #F4B93E; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; gap: 6px;">
+<div style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;">First basket email</div>
+<div style="font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: 28px; line-height: 1.05; letter-spacing: -0.02em;">{{sumTitle}}</div>
+<div style="font-size: 16px; line-height: 1.4;">{{sumSub}}</div>
+<div style="font-size: 14px; line-height: 1.4; margin-top: 4px;">One email a day at most, never at night.</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B655E;">In that basket</div>
+<sc-for list="{{basketRows}}" as="row" hint-placeholder-count="3">
+<div style="background: #FFFDF8; border: 1.5px solid #E2D9C3; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+<div style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+<div style="font-size: 16px; font-weight: 700;">{{row.name}}</div>
+<div style="font-size: 14px; color: #5B655E;">{{row.sub}}</div>
+</div>
+<sc-if value="{{row.cw}}" hint-placeholder-val="{{ false }}"><div style="flex-shrink: 0; padding: 4px 10px; border-radius: 12px; background: #FBE3DC; color: #9C2E19; font-size: 12px; font-weight: 700;">Can't wait</div></sc-if>
+</div>
+</sc-for>
+</div>
+
+<sc-if value="{{hasLater}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B655E;">Coming up after</div>
+<sc-for list="{{laterRows}}" as="row" hint-placeholder-count="3">
+<div style="background: #FFFDF8; border: 1.5px solid #E2D9C3; border-radius: 16px; padding: 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+<div style="display: flex; flex-direction: column; gap: 3px; min-width: 0;">
+<div style="font-size: 16px; font-weight: 700;">{{row.name}}</div>
+<div style="font-size: 14px; color: #5B655E;">{{row.sub}}</div>
+</div>
+<sc-if value="{{row.cw}}" hint-placeholder-val="{{ false }}"><div style="flex-shrink: 0; padding: 4px 10px; border-radius: 12px; background: #FBE3DC; color: #9C2E19; font-size: 12px; font-weight: 700;">Can't wait</div></sc-if>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B655E;">Your answers</div>
+<div style="background: #FFFDF8; border: 1.5px solid #E2D9C3; border-radius: 16px; display: flex; flex-direction: column; overflow: hidden;">
+<sc-for list="{{settings}}" as="s" hint-placeholder-count="5">
+<button type="button" onClick="{{s.edit}}" style="min-height: 56px; border: none; border-bottom: {{s.divider}}; background: transparent; padding: 0 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; text-align: left;">
+<span style="font-size: 16px; font-weight: 700;">{{s.label}}</span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 15px; color: #4A544D;">{{s.value}}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 5 16 12 9 19"></polyline></svg></span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px;">
+<div style="font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #5B655E;">Privacy</div>
+<p style="margin: 0; font-size: 15px; line-height: 1.45; color: #4A544D;">We read only your name and email address, never your inbox. We keep the items you pick and the dates you tap.</p>
+<sc-if value="{{showDeleteBtn}}" hint-placeholder-val="{{ true }}">
+<button type="button" onClick="{{onAskDelete}}" style="height: 52px; border-radius: 14px; border: 1.5px solid #9C2E19; background: transparent; color: #9C2E19; font-size: 16px; font-weight: 700;">Delete my data</button>
+</sc-if>
+<sc-if value="{{showConfirm}}" hint-placeholder-val="{{ false }}">
+<div style="background: #FBE3DC; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; gap: 12px;">
+<div style="font-size: 15px; line-height: 1.4; font-weight: 600;">Delete your items, tap history and email address? This can't be undone.</div>
+<button type="button" onClick="{{onDelete}}" style="height: 52px; border-radius: 14px; border: none; background: #9C2E19; color: #FFFFFF; font-size: 16px; font-weight: 700;">Yes, delete everything</button>
+<button type="button" onClick="{{onKeep}}" style="height: 52px; border-radius: 14px; border: 1.5px solid #9C2E19; background: transparent; color: #9C2E19; font-size: 16px; font-weight: 700;">Keep my data</button>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"startScreen":{"editor":"enum","options":["welcome","household","items","packs","apps","pantry","home"],"default":"welcome"},"$preview":{"width":390,"height":844}}'>
+const LADDER = [
+  {d:1,l:'1 day'},{d:2,l:'2 days'},{d:3,l:'3 days'},{d:4,l:'4 days'},{d:5,l:'5 days'},{d:6,l:'6 days'},
+  {d:7,l:'1 week'},{d:10,l:'10 days'},{d:14,l:'2 weeks'},{d:21,l:'3 weeks'},{d:30,l:'1 month'},
+  {d:45,l:'6 weeks'},{d:60,l:'2 months'},{d:90,l:'3 months'}
+];
+const SIZES = [
+  {k:'1',num:'1',cap:'Just me',label:'Just me',m:1.6},
+  {k:'2',num:'2',cap:'Two of us',label:'Two of us',m:1},
+  {k:'4',num:'3-4',cap:'A small crew',label:'3 to 4 people',m:0.65},
+  {k:'5',num:'5+',cap:'A full house',label:'5 or more people',m:0.45}
+];
+const CATS = ['Dairy and eggs','Fresh','Staples','Home care','Pets'];
+const ITEMS = [
+  {id:'milk',name:'Milk',cat:'Dairy and eggs',base:2,cw:true},
+  {id:'curd',name:'Curd',cat:'Dairy and eggs',base:4},
+  {id:'eggs',name:'Eggs',cat:'Dairy and eggs',base:6},
+  {id:'butter',name:'Butter',cat:'Dairy and eggs',base:20},
+  {id:'paneer',name:'Paneer',cat:'Dairy and eggs',base:5},
+  {id:'bread',name:'Bread',cat:'Fresh',base:3,cw:true},
+  {id:'onions',name:'Onions',cat:'Fresh',base:7},
+  {id:'potatoes',name:'Potatoes',cat:'Fresh',base:7},
+  {id:'tomatoes',name:'Tomatoes',cat:'Fresh',base:5},
+  {id:'atta',name:'Atta',cat:'Staples',base:21},
+  {id:'rice',name:'Rice',cat:'Staples',base:30},
+  {id:'dal',name:'Dal',cat:'Staples',base:30},
+  {id:'oil',name:'Cooking oil',cat:'Staples',base:30},
+  {id:'ghee',name:'Ghee',cat:'Staples',base:45},
+  {id:'sugar',name:'Sugar',cat:'Staples',base:30},
+  {id:'salt',name:'Salt',cat:'Staples',base:60},
+  {id:'tea',name:'Tea',cat:'Staples',base:30},
+  {id:'coffee',name:'Coffee',cat:'Staples',base:30},
+  {id:'dishwash',name:'Dishwash liquid',cat:'Home care',base:25},
+  {id:'detergent',name:'Laundry detergent',cat:'Home care',base:30},
+  {id:'toothpaste',name:'Toothpaste',cat:'Home care',base:45},
+  {id:'tissue',name:'Toilet paper',cat:'Home care',base:30},
+  {id:'handwash',name:'Handwash',cat:'Home care',base:25},
+  {id:'garbage',name:'Garbage bags',cat:'Home care',base:30},
+  {id:'floor',name:'Floor cleaner',cat:'Home care',base:30},
+  {id:'cat',name:'Cat food',cat:'Pets',base:14,cw:true,pet:true},
+  {id:'dog',name:'Dog food',cat:'Pets',base:21,cw:true,pet:true}
+];
+const SAMPLE = {milk:true,eggs:true,bread:true,atta:true,rice:true,dal:true,oil:true,tea:true,cat:true};
+const APPS = [
+  {k:'blinkit',label:'Blinkit'},{k:'zepto',label:'Zepto'},{k:'instamart',label:'Instamart'},
+  {k:'bigbasket',label:'BigBasket'},{k:'other',label:'Other'}
+];
+const WINS = [
+  {k:'none',label:'Just tell me when I need it',desc:'One email for whatever is due that day.',days:0},
+  {k:'2d',label:'2 days',desc:'Club anything due within 2 days of the first item.',days:2},
+  {k:'week',label:'Up to a week',desc:'Fewer emails and bigger baskets, but a higher chance of running out first.',days:7}
+];
+const WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MO = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const NEXT = {household:'items', items:'packs', packs:'apps', apps:'pantry'};
+const BACK = {household:'welcome', items:'household', packs:'items', apps:'packs'};
+const STEP = {household:1, items:2, packs:3, apps:4};
+const ON = {bg:'#1E5B45', fg:'#FFFFFF', bd:'#1E5B45'};
+const OFF = {bg:'#FFFDF8', fg:'#1F2A24', bd:'#D9CFB6'};
+
+function snap(d) {
+  let best = 0;
+  for (let i = 0; i < LADDER.length; i++) {
+    if (Math.abs(LADDER[i].d - d) < Math.abs(LADDER[best].d - d)) best = i;
+  }
+  return best;
+}
+function relDate(off) {
+  if (off === 1) return 'tomorrow';
+  const d = new Date();
+  d.setDate(d.getDate() + off);
+  return WD[d.getDay()] + ' ' + d.getDate() + ' ' + MO[d.getMonth()];
+}
+function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+class Component extends DCLogic {
+  cur() {
+    const st = this.state || {};
+    const start = this.props.startScreen || 'welcome';
+    const pre = start !== 'welcome';
+    return {
+      screen: st.screen ?? start,
+      size: st.size ?? '2',
+      picked: st.picked ?? (pre ? SAMPLE : {}),
+      idx: st.idx ?? {},
+      cw: st.cw ?? {},
+      pets: st.pets ?? (pre ? {cat:'Mittens'} : {}),
+      main: st.main ?? 'blinkit',
+      backup: st.backup ?? (pre ? 'zepto' : 'none'),
+      win: st.win ?? '2d',
+      fromPantry: st.fromPantry || false,
+      ordered: st.ordered ?? {},
+      learned: st.learned ?? 'pending',
+      paused: st.paused ?? (pre ? {butter:true} : {}),
+      confirm: !!st.confirm,
+      deleted: !!st.deleted,
+      custom: st.custom ?? [],
+      adding: st.adding ?? null,
+      draft: st.draft ?? ''
+    };
+  }
+
+  renderVals() {
+    const c = this.cur();
+    const set = (o) => this.setState(o);
+    const size = SIZES.find((s) => s.k === c.size) || SIZES[1];
+    const idxFor = (it) => c.idx[it.id] ?? snap(Math.max(1, Math.round(it.base * (it.pet ? 1 : size.m))));
+    const isCw = (it) => c.cw[it.id] ?? !!it.cw;
+    const nameFor = (it) => {
+      if (!it.pet) return it.name;
+      const n = (c.pets[it.id] || '').trim();
+      if (!n) return it.name;
+      return n + (/s$/i.test(n) ? "'" : "'s") + ' ' + it.name.toLowerCase();
+    };
+    // Items the person added themselves start at a 2-week guess, which they can change on the next step.
+    const allItems = ITEMS.concat(c.custom.map((x) => ({ id: x.id, name: x.name, cat: x.cat, base: 14 })));
+    const pickedItems = allItems.filter((it) => c.picked[it.id]);
+    const count = pickedItems.length;
+    const inFlow = STEP[c.screen] !== undefined;
+
+    const segs = [1, 2, 3, 4].map((n) => ({ bg: n <= (STEP[c.screen] || 0) ? '#1E5B45' : '#E2D9C3' }));
+
+    const sizeCards = SIZES.map((s) => {
+      const on = s.k === c.size;
+      const t = on ? ON : OFF;
+      return { num: s.num, cap: s.cap, on, bg: t.bg, fg: t.fg, bd: t.bd, pick: () => set({ size: s.k }) };
+    });
+
+    const groups = CATS.map((cat) => {
+      const adding = c.adding === cat;
+      const canAdd = c.draft.trim().length > 0;
+      return {
+        cat,
+        addLabel: 'Add an item to ' + cat,
+        notAdding: !adding,
+        isAdding: adding,
+        draft: c.draft,
+        addDisabled: !canAdd,
+        addBg: canAdd ? '#1E5B45' : '#8A9088',
+        onOpen: () => set({ adding: cat, draft: '' }),
+        onCancel: () => set({ adding: null, draft: '' }),
+        onDraft: (e) => set({ draft: e.target.value.slice(0, 24) }),
+        onAdd: () => {
+          const raw = c.draft.trim();
+          if (!raw) return;
+          const name = cap(raw);
+          const dupe = allItems.find((it) => it.name.toLowerCase() === name.toLowerCase());
+          if (dupe) {
+            set({ picked: { ...c.picked, [dupe.id]: true }, adding: null, draft: '' });
+            return;
+          }
+          const id = 'x' + (c.custom.length + 1);
+          set({ custom: [...c.custom, { id, name, cat }], picked: { ...c.picked, [id]: true }, adding: null, draft: '' });
+        },
+        chips: allItems.filter((it) => it.cat === cat).map((it) => {
+          const on = !!c.picked[it.id];
+          const t = on ? ON : OFF;
+          return { name: it.name, selected: on, bg: t.bg, fg: t.fg, bd: t.bd, toggle: () => set({ picked: { ...c.picked, [it.id]: !on } }) };
+        })
+      };
+    });
+
+    const packRows = pickedItems.map((it) => {
+      const i = idxFor(it);
+      const cw = isCw(it);
+      return {
+        name: nameFor(it),
+        isPet: !!it.pet,
+        pet: c.pets[it.id] || '',
+        onPet: (e) => set({ pets: { ...c.pets, [it.id]: e.target.value } }),
+        dur: LADDER[i].l,
+        minusDis: i === 0,
+        plusDis: i === LADDER.length - 1,
+        minusOp: i === 0 ? 0.4 : 1,
+        plusOp: i === LADDER.length - 1 ? 0.4 : 1,
+        onMinus: () => set({ idx: { ...c.idx, [it.id]: Math.max(0, i - 1) } }),
+        onPlus: () => set({ idx: { ...c.idx, [it.id]: Math.min(LADDER.length - 1, i + 1) } }),
+        cwOn: cw,
+        cwText: cw ? "Can't wait" : 'Can wait',
+        cwBg: cw ? '#FBE3DC' : 'transparent',
+        cwFg: cw ? '#9C2E19' : '#4A544D',
+        cwBd: cw ? '#9C2E19' : '#D9CFB6',
+        onCw: () => set({ cw: { ...c.cw, [it.id]: !cw } })
+      };
+    });
+
+    const mainChips = APPS.map((a) => {
+      const on = a.k === c.main;
+      const t = on ? ON : OFF;
+      return { label: a.label, on, bg: t.bg, fg: t.fg, bd: t.bd, pick: () => set({ main: a.k, backup: c.backup === a.k ? 'none' : c.backup }) };
+    });
+    const backupChips = APPS.filter((a) => a.k !== c.main).concat([{ k: 'none', label: 'No backup' }]).map((a) => {
+      const on = a.k === c.backup;
+      const t = on ? ON : OFF;
+      return { label: a.label, on, bg: t.bg, fg: t.fg, bd: t.bd, pick: () => set({ backup: a.k }) };
+    });
+    const winOpts = WINS.map((w) => {
+      const on = w.k === c.win;
+      return { label: w.label, desc: w.desc, on, bg: on ? '#E6EFE6' : '#FFFDF8', bd: on ? '#1E5B45' : '#D9CFB6', ring: on ? '#1E5B45' : '#8A9088', pick: () => set({ win: w.k }) };
+    });
+
+    // Pantry: order-by = restock date + estimated days x 0.85, counting from sign-up day.
+    const list = pickedItems.map((it) => {
+      const days = LADDER[idxFor(it)].d;
+      const off = Math.max(1, Math.round(days * 0.85));
+      return { name: nameFor(it), cw: isCw(it), off, sub: 'Lasts about ' + LADDER[idxFor(it)].l + ' · order by ' + relDate(off) };
+    });
+    list.sort((a, b) => (a.off - b.off) || a.name.localeCompare(b.name));
+    const win = WINS.find((w) => w.k === c.win) || WINS[1];
+    const first = list.length ? list[0].off : 1;
+    const basketRows = list.filter((x) => x.off <= first + win.days);
+    const laterRows = list.filter((x) => x.off > first + win.days);
+    const n = basketRows.length;
+    const winText = c.win === 'none' ? 'due that day' : c.win === '2d' ? 'due within 2 days of the first' : 'due within a week of the first';
+    const cwCount = pickedItems.filter((it) => isCw(it)).length;
+    const mainLabel = (APPS.find((a) => a.k === c.main) || APPS[0]).label;
+    const backupApp = APPS.find((a) => a.k === c.backup);
+    const edit = (screen) => () => set({ screen, fromPantry: c.screen === 'home' ? 'home' : 'pantry', confirm: false });
+    const settings = [
+      { label: 'Household', value: size.label, edit: edit('household') },
+      { label: 'Items', value: count + (count === 1 ? ' item' : ' items'), edit: edit('items') },
+      { label: 'Pack lengths', value: cwCount + " can't wait", edit: edit('packs') },
+      { label: 'Grocery apps', value: mainLabel + (backupApp ? ', then ' + backupApp.label : ''), edit: edit('apps') },
+      { label: 'Wait window', value: win.k === 'none' ? 'None' : win.label, edit: edit('apps') }
+    ].map((s, i, arr) => ({ ...s, divider: i === arr.length - 1 ? 'none' : '1.5px solid #E2D9C3' }));
+
+    // Returning-user home. Days since the last restock are demo data for this prototype.
+    const AGO = { milk: 2, eggs: 3, bread: 1, atta: 12, rice: 9, dal: 14, oil: 20, tea: 8, cat: 10 };
+    const homeList = pickedItems.map((it) => {
+      const days = LADDER[idxFor(it)].d;
+      const justOrdered = !!c.ordered[it.id];
+      const ago = justOrdered ? 0 : (AGO[it.id] ?? 0);
+      return { it, justOrdered, off: Math.max(0, Math.round(days * 0.85) - ago) };
+    });
+    homeList.sort((a, b) => (a.off - b.off) || a.it.name.localeCompare(b.it.name));
+    const dueList = homeList.filter((x) => x.off <= 2 && !x.justOrdered);
+    const stockedList = homeList.filter((x) => !(x.off <= 2 && !x.justOrdered));
+    const dueRows = dueList.map((x) => ({
+      name: nameFor(x.it),
+      pill: x.off === 0 ? 'Order today' : (x.off === 1 ? 'Order by tomorrow' : 'Due in ' + x.off + ' days'),
+      pillBg: x.off === 0 ? '#FBE3DC' : '#FCEFC9',
+      pillFg: x.off === 0 ? '#9C2E19' : '#5C4300',
+      sub: 'Lasts about ' + LADDER[idxFor(x.it)].l + (isCw(x.it) ? " \u00b7 can't wait" : ''),
+      onOrdered: () => set({ ordered: { ...c.ordered, [x.it.id]: true } })
+    }));
+    const stockedRows = stockedList.map((x, i, arr) => ({
+      name: nameFor(x.it),
+      when: x.justOrdered ? 'Restocked today' : 'Order by ' + relDate(x.off),
+      divider: i === arr.length - 1 ? 'none' : '1.5px solid #E2D9C3'
+    }));
+    const firstOff = homeList.length ? homeList[0].off : 1;
+    const noDue = dueList.length === 0;
+    const basketN = homeList.filter((x) => !x.justOrdered && x.off <= firstOff + win.days).length;
+    const eggsIt = ITEMS.find((i) => i.id === 'eggs');
+    const eggsDur = LADDER[idxFor(eggsIt)].l;
+    const pausedRows = ITEMS.filter((it) => c.paused[it.id] && !c.picked[it.id]).map((it) => ({
+      name: it.name,
+      sub: 'Paused after 2 nudges with no tap',
+      onResume: () => set({ picked: { ...c.picked, [it.id]: true }, paused: { ...c.paused, [it.id]: false } })
+    }));
+
+    let ctaLabel = 'Continue';
+    if (c.fromPantry) ctaLabel = 'Save changes';
+    else if (c.screen === 'items') ctaLabel = count ? 'Continue with ' + count + (count === 1 ? ' item' : ' items') : 'Pick at least one';
+    else if (c.screen === 'apps') ctaLabel = 'Show my pantry';
+    const ctaDisabled = c.screen === 'items' && count === 0;
+
+    return {
+      showWelcome: c.screen === 'welcome',
+      showFlow: inFlow,
+      showPantry: c.screen === 'pantry',
+      showHome: c.screen === 'home',
+      onReturning: () => set({ screen: 'home', picked: SAMPLE, pets: { cat: 'Mittens' }, backup: 'zepto', paused: { butter: true }, ordered: {}, learned: 'pending', deleted: false }),
+      homeLabel: noDue ? 'Nothing due' : 'Next basket email',
+      homeTitle: noDue ? "You're stocked up" : (firstOff === 0 ? 'Today' : cap(relDate(firstOff))),
+      homeBody: noDue ? 'Next basket email goes out ' + relDate(firstOff) + '.' : basketN + (basketN === 1 ? ' item ' : ' items ') + winText + '.',
+      showLearned: c.learned === 'pending' && !!c.picked.eggs,
+      learnedText: "You've restocked eggs about every 4 days lately, not every " + eggsDur + '.',
+      learnYesLabel: 'Update to 4 days',
+      learnNoLabel: 'Keep ' + eggsDur,
+      onLearnYes: () => set({ learned: 'accepted', idx: { ...c.idx, eggs: snap(4) } }),
+      onLearnNo: () => set({ learned: 'kept' }),
+      showLearnedDone: c.learned === 'accepted',
+      learnedDoneText: 'Done. Eggs now lasts about 4 days. You can change it any time in Your answers.',
+      noDue,
+      dueRows,
+      hasStocked: stockedRows.length > 0,
+      stockedRows,
+      hasPaused: pausedRows.length > 0,
+      pausedRows,
+      onAddItem: edit('items'),
+      isHousehold: c.screen === 'household',
+      isItems: c.screen === 'items',
+      isPacks: c.screen === 'packs',
+      isApps: c.screen === 'apps',
+      deleted: c.deleted,
+      onGoogle: () => set({ screen: 'household', deleted: false }),
+      stepLabel: 'Step ' + (STEP[c.screen] || 1) + ' of 4',
+      segs,
+      onBack: () => set(c.fromPantry ? { screen: c.fromPantry === 'home' ? 'home' : 'pantry', fromPantry: false } : { screen: BACK[c.screen] || 'welcome' }),
+      onPantryBack: () => set({ screen: 'apps', confirm: false }),
+      ctaLabel,
+      ctaDisabled,
+      ctaBg: ctaDisabled ? '#8A9088' : '#1E5B45',
+      onCta: () => set(c.fromPantry ? { screen: c.fromPantry === 'home' ? 'home' : 'pantry', fromPantry: false } : { screen: NEXT[c.screen] || 'pantry' }),
+      sizeCards,
+      groups,
+      packRows,
+      mainChips,
+      backupChips,
+      winOpts,
+      sumTitle: cap(relDate(first)),
+      sumSub: n + (n === 1 ? ' item ' : ' items ') + winText + '.',
+      basketRows,
+      laterRows,
+      hasLater: laterRows.length > 0,
+      settings,
+      showDeleteBtn: !c.confirm,
+      showConfirm: c.confirm,
+      onAskDelete: () => set({ confirm: true }),
+      onKeep: () => set({ confirm: false }),
+      onDelete: () => set({ screen: 'welcome', picked: {}, idx: {}, cw: {}, pets: {}, size: '2', main: 'blinkit', backup: 'none', win: '2d', fromPantry: false, confirm: false, deleted: true, custom: [], adding: null, draft: '', ordered: {}, learned: 'pending', paused: {} })
+    };
+  }
+}
+</script>
+</body>
+</html>

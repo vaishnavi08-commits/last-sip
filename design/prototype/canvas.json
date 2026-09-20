@@ -1,0 +1,55 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Email.dc.html": {
+      "h": 1540,
+      "is_interactive": true,
+      "title": "Email: restock basket",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "Main.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "App: sign in, onboarding, first pantry",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "Returning.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "App: returning user home",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-09-20T13:16:21.220Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "title": {
+      "kind": "title1",
+      "maxW": 1330,
+      "text": "Running-Low Nudge: v1 prototype",
+      "w": 240,
+      "x": 0,
+      "y": -260
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Email.dc.html",
+    "Returning.dc.html"
+  ],
+  "pages": [],
+  "title": "Running-Low Nudge Prototype"
+}

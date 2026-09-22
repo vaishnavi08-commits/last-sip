@@ -69,12 +69,12 @@ export function OnboardingFlow() {
       });
       setFormError(null);
       startTransition(async () => {
-        try {
-          await completeOnboarding({ size, items, main, backup, win });
-          router.push("/home");
-        } catch (e) {
-          setFormError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
+        const result = await completeOnboarding({ size, items, main, backup, win });
+        if (!result.ok) {
+          setFormError(result.error);
+          return;
         }
+        router.push("/home");
       });
       return;
     }

@@ -20,7 +20,9 @@ export type OnboardingInput = {
   win: WaitWindowKey;
 };
 
-function isValid(input: OnboardingInput): string | null {
+export type OnboardingResult = { ok: true } | { ok: false; error: string };
+
+function validationError(input: OnboardingInput): string | null {
   if (!SIZES.some((s) => s.k === input.size)) return "Invalid household size.";
   if (!input.items.length) return "Pick at least one item.";
   for (const it of input.items) {
@@ -37,15 +39,19 @@ function isValid(input: OnboardingInput): string | null {
   return null;
 }
 
-export async function completeOnboarding(input: OnboardingInput) {
-  const error = isValid(input);
-  if (error) throw new Error(error);
+// Server Actions have their thrown-error messages redacted by Next.js in
+// production for security, so real failures must come back as data (this
+// return value), never as a thrown Error, or the client only ever sees a
+// generic "Minified React error #441".
+export async function completeOnboarding(input: OnboardingInput): Promise<OnboardingResult> {
+  const validationErr = validationError(input);
+  if (validationErr) return { ok: false, error: validationErr };
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not signed in.");
+  if (!user) return { ok: false, error: "Not signed in." };
 
   const { error: profileError } = await supabase
     .from("profiles")
@@ -57,11 +63,11 @@ export async function completeOnboarding(input: OnboardingInput) {
       onboarding_completed_at: new Date().toISOString(),
     })
     .eq("id", user.id);
-  if (profileError) throw new Error(profileError.message);
+  if (profileError) return { ok: false, error: profileError.message };
 
   // Onboarding always writes the household's full item list fresh.
   const { error: deleteError } = await supabase.from("pantry_items").delete().eq("user_id", user.id);
-  if (deleteError) throw new Error(deleteError.message);
+  if (deleteError) return { ok: false, error: deleteError.message };
 
   const { error: insertError } = await supabase.from("pantry_items").insert(
     input.items.map((it) => ({
@@ -74,5 +80,7 @@ export async function completeOnboarding(input: OnboardingInput) {
       pet_name: it.petName,
     })),
   );
-  if (insertError) throw new Error(insertError.message);
+  if (insertError) return { ok: false, error: insertError.message };
+
+  return { ok: true };
 }

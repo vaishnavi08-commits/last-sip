@@ -1,6 +1,8 @@
 // The playful message library. 10 variants per item so the same person
-// doesn't see the same line twice in a row. Pet-food lines use {pet},
-// filled in with the pet's name at render time.
+// doesn't see the same line twice in a row. Pet-food lines use {pet} for
+// the bare name and {petPoss} for its possessive form ("Mittens'",
+// "Rex's"), filled in at render time.
+import { possessive } from "@/lib/catalog";
 
 export const MESSAGES: Record<string, string[]> = {
   milk: [
@@ -305,27 +307,27 @@ export const MESSAGES: Record<string, string[]> = {
   ],
   cat: [
     "{pet} is staring at the empty bowl. Just saying.",
-    "{pet}'s food is running low.",
+    "{petPoss} food is running low.",
     "{pet} would like you to know the bowl is looking thin.",
-    "Down to the last bit of {pet}'s food.",
-    "{pet}'s dinner supply is dwindling.",
+    "Down to the last bit of {petPoss} food.",
+    "{petPoss} dinner supply is dwindling.",
     "{pet} has started giving you the look. Food's running low.",
     "Not much food left for {pet}.",
-    "{pet}'s food stash needs a refill soon.",
+    "{petPoss} food stash needs a refill soon.",
     "{pet} is politely (loudly) requesting more food.",
     "Food bowl alert: {pet} is almost out.",
   ],
   dog: [
     "{pet} has started giving you the look. Time to restock.",
-    "{pet}'s food is running low.",
-    "Down to the last bit of {pet}'s food.",
-    "{pet}'s dinner supply is dwindling.",
+    "{petPoss} food is running low.",
+    "Down to the last bit of {petPoss} food.",
+    "{petPoss} dinner supply is dwindling.",
     "{pet} would like you to know the bowl is looking thin.",
     "Not much food left for {pet}.",
-    "{pet}'s food stash needs a refill soon.",
+    "{petPoss} food stash needs a refill soon.",
     "{pet} is politely (loudly) requesting more food.",
     "Food bowl alert: {pet} is almost out.",
-    "{pet}'s patience is running thinner than the food supply.",
+    "{petPoss} patience is running thinner than the food supply.",
   ],
 };
 
@@ -345,5 +347,9 @@ const GENERIC: string[] = [
 export function pickMessage(catalogId: string | null, name: string, petName: string | null): string {
   const variants = (catalogId && MESSAGES[catalogId]) || GENERIC;
   const chosen = variants[Math.floor(Math.random() * variants.length)];
-  return chosen.replace(/\{pet\}/g, petName || name).replace(/\{name\}/g, name);
+  const pet = petName || name;
+  return chosen
+    .replace(/\{petPoss\}/g, possessive(pet))
+    .replace(/\{pet\}/g, pet)
+    .replace(/\{name\}/g, name);
 }

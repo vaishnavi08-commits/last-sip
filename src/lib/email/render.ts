@@ -30,6 +30,25 @@ export function basketEmailSubject(items: BasketEmailItem[]): string {
   return rest.length ? `${base}, and ${rest.length} more ${rest.length === 1 ? "is" : "are"} close behind` : base;
 }
 
+// Email clients (Gmail's app and webmail included) have patchy support for
+// CSS flexbox, so every side-by-side layout below uses an HTML table
+// instead — the one layout technique that renders consistently across
+// email clients.
+function buttonRow(cells: string[]): string {
+  const width = `${Math.floor(100 / cells.length)}%`;
+  const tds = cells
+    .map((html, i) => {
+      const padding = i === 0 ? "0 4px 0 0" : i === cells.length - 1 ? "0 0 0 4px" : "0 4px";
+      return `<td width="${width}" style="padding:${padding};">${html}</td>`;
+    })
+    .join("");
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;"><tr>${tds}</tr></table>`;
+}
+
+function miniButton(label: string): string {
+  return `<div style="min-height:44px;border-radius:12px;border:1.5px solid #D9CFB6;background:#FFFDF8;text-align:center;font-size:12px;font-weight:700;line-height:1.2;padding:11px 4px;box-sizing:border-box;">${escapeHtml(label)}</div>`;
+}
+
 export function renderBasketEmailHtml({ items, mainAppLabel, manageUrl }: BasketEmailProps): string {
   const n = items.length;
   const first = items[0];
@@ -49,17 +68,17 @@ export function renderBasketEmailHtml({ items, mainAppLabel, manageUrl }: Basket
       const message = pickMessage(it.catalogId, it.name, it.petName);
       return `
 <div style="background:#FFFDF8;border:1.5px solid #E2D9C3;border-radius:20px;padding:16px;margin:0 0 14px;">
-  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
-    <div style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:21px;line-height:1.15;letter-spacing:-0.01em;">${escapeHtml(it.name)}</div>
-    <div style="flex-shrink:0;padding:4px 10px;border-radius:14px;font-size:13px;font-weight:700;color:#1F2A24;background:${tagBg};border:1.5px solid ${tagBd};">${dueTag(it.off)}</div>
-  </div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;">
+    <tr>
+      <td style="font-family:'Bricolage Grotesque',system-ui,sans-serif;font-weight:700;font-size:21px;line-height:1.3;letter-spacing:-0.01em;">${escapeHtml(it.name)}</td>
+      <td align="right" valign="middle" style="white-space:nowrap;padding-left:10px;">
+        <span style="display:inline-block;padding:4px 10px;border-radius:14px;font-size:13px;font-weight:700;color:#1F2A24;background:${tagBg};border:1.5px solid ${tagBd};">${dueTag(it.off)}</span>
+      </td>
+    </tr>
+  </table>
   <p style="margin:10px 0 12px;font-size:16px;line-height:1.4;color:#3B453F;">${escapeHtml(message)}</p>
-  <div style="height:52px;border-radius:14px;background:#1E5B45;color:#FFFFFF;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:8px;">Order now on ${escapeHtml(mainAppLabel)}</div>
-  <div style="display:flex;gap:8px;">
-    <div style="flex:1;min-height:44px;border-radius:12px;border:1.5px solid #D9CFB6;background:#FFFDF8;display:flex;align-items:center;justify-content:center;padding:6px 4px;font-size:12px;font-weight:700;text-align:center;">I've ordered</div>
-    <div style="flex:1;min-height:44px;border-radius:12px;border:1.5px solid #D9CFB6;background:#FFFDF8;display:flex;align-items:center;justify-content:center;padding:6px 4px;font-size:12px;font-weight:700;text-align:center;">Still have plenty</div>
-    <div style="flex:1;min-height:44px;border-radius:12px;border:1.5px solid #D9CFB6;background:#FFFDF8;display:flex;align-items:center;justify-content:center;padding:6px 4px;font-size:12px;font-weight:700;text-align:center;">Add to next basket</div>
-  </div>
+  <div style="min-height:52px;border-radius:14px;background:#1E5B45;color:#FFFFFF;font-size:16px;font-weight:700;text-align:center;line-height:52px;margin-bottom:8px;">Order now on ${escapeHtml(mainAppLabel)}</div>
+  ${buttonRow([miniButton("I've ordered"), miniButton("Still have plenty"), miniButton("Add to next basket")])}
 </div>`;
     })
     .join("");
@@ -75,10 +94,7 @@ export function renderBasketEmailHtml({ items, mainAppLabel, manageUrl }: Basket
   <div style="margin-top:6px;padding-top:2px;">
     <p style="margin:0 0 12px;font-size:14px;line-height:1.45;color:#5B655E;">You're getting this because you signed in to Last Sip with Google. One basket email a day at most.</p>
     <a href="${manageUrl}" style="display:block;text-align:center;min-height:44px;line-height:44px;border-radius:12px;border:1.5px solid #1E5B45;color:#1E5B45;font-size:15px;font-weight:700;text-decoration:none;margin-bottom:10px;">Manage my pantry</a>
-    <div style="display:flex;gap:8px;">
-      <div style="flex:1;min-height:40px;border-radius:12px;border:1.5px solid #D9CFB6;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#5B655E;">Unsubscribe</div>
-      <div style="flex:1;min-height:40px;border-radius:12px;border:1.5px solid #D9CFB6;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#5B655E;">Delete my data</div>
-    </div>
+    ${buttonRow([miniButton("Unsubscribe"), miniButton("Delete my data")])}
   </div>
 </div>
 </body>

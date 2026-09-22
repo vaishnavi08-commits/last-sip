@@ -1,4 +1,4 @@
-import { LADDER, WaitWindowKey, nameForCatalogId, snapToLadder } from "@/lib/catalog";
+import { LADDER, WaitWindowKey, nameForCatalogId, possessive, snapToLadder } from "@/lib/catalog";
 import { todayISO } from "@/lib/dates";
 
 export type PantryRow = {
@@ -22,7 +22,7 @@ export type ComputedItem = {
 
 export function itemName(it: { catalog_id: string | null; custom_name: string | null; pet_name: string | null }): string {
   const base = it.custom_name ?? nameForCatalogId(it.catalog_id) ?? "Item";
-  return it.pet_name ? `${it.pet_name}'s ${base.toLowerCase()}` : base;
+  return it.pet_name ? `${possessive(it.pet_name)} ${base.toLowerCase()}` : base;
 }
 
 function daysBetween(fromISO: string, toISO: string): number {

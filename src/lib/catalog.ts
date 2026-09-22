@@ -113,6 +113,10 @@ export const WINS: { k: WaitWindowKey; label: string; desc: string; days: number
   },
 ];
 
+export function possessive(name: string): string {
+  return name + (/s$/i.test(name) ? "'" : "'s");
+}
+
 export function nameForCatalogId(id: string | null): string | undefined {
   return ITEMS.find((it) => it.id === id)?.name;
 }

@@ -74,7 +74,7 @@ export function OnboardingFlow() {
           setFormError(result.error);
           return;
         }
-        router.push("/home");
+        router.push("/pantry");
       });
       return;
     }

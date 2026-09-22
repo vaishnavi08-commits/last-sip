@@ -113,6 +113,10 @@ export const WINS: { k: WaitWindowKey; label: string; desc: string; days: number
   },
 ];
 
+export function nameForCatalogId(id: string | null): string | undefined {
+  return ITEMS.find((it) => it.id === id)?.name;
+}
+
 export function capitalize(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }

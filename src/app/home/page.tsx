@@ -53,7 +53,7 @@ export default async function HomePage() {
           {noDue ? "Nothing due" : "Next basket email"}
         </div>
         <div className="font-heading font-bold text-[28px] leading-tight tracking-tight">
-          {noDue ? "You're stocked up" : firstOff === 0 ? "Today" : capitalize(relativeDate(firstOff))}
+          {noDue ? "You're stocked up" : firstOff <= 0 ? "Today" : capitalize(relativeDate(firstOff))}
         </div>
         <div className="text-base leading-snug">
           {noDue

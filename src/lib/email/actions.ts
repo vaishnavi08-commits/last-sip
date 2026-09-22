@@ -4,6 +4,7 @@ import { Resend } from "resend";
 import { createClient } from "@/lib/supabase/server";
 import { APPS, WINS, type AppKey, type WaitWindowKey } from "@/lib/catalog";
 import { computeHomeItems, itemName, splitByWindow, type PantryRow } from "@/lib/pantry/compute";
+import { signActionToken } from "./token";
 import { basketEmailSubject, renderBasketEmailHtml, type BasketEmailItem } from "./render";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
@@ -42,6 +43,7 @@ export async function sendTestBasketEmail(): Promise<ActionResult> {
   const offById = new Map(list.map((x) => [x.id, x.off]));
   const withinIds = new Set(within.map((x) => x.id));
 
+  const base = appUrl();
   const basketItems: BasketEmailItem[] = rows
     .filter((r) => withinIds.has(r.id))
     .map((r) => ({
@@ -50,6 +52,12 @@ export async function sendTestBasketEmail(): Promise<ActionResult> {
       petName: r.pet_name,
       cantWait: r.cant_wait,
       off: offById.get(r.id)!,
+      links: {
+        order: `${base}/e/${signActionToken(r.id, user.id, "order")}`,
+        ordered: `${base}/e/${signActionToken(r.id, user.id, "ordered")}`,
+        plenty: `${base}/e/${signActionToken(r.id, user.id, "plenty")}`,
+        basket: `${base}/e/${signActionToken(r.id, user.id, "basket")}`,
+      },
     }))
     .sort((a, b) => a.off - b.off);
 
@@ -60,7 +68,7 @@ export async function sendTestBasketEmail(): Promise<ActionResult> {
     from: "Last Sip <onboarding@resend.dev>",
     to: user.email,
     subject: basketEmailSubject(basketItems),
-    html: renderBasketEmailHtml({ items: basketItems, mainAppLabel, manageUrl: `${appUrl()}/home` }),
+    html: renderBasketEmailHtml({ items: basketItems, mainAppLabel, manageUrl: `${base}/home` }),
   });
   if (error) return { ok: false, error: error.message };
   return { ok: true };

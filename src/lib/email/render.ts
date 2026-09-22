@@ -6,6 +6,7 @@ export type BasketEmailItem = {
   petName: string | null;
   cantWait: boolean;
   off: number; // days until order-by; <=0 means due today
+  links: { order: string; ordered: string; plenty: string; basket: string };
 };
 
 export type BasketEmailProps = {
@@ -45,8 +46,12 @@ function buttonRow(cells: string[]): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;"><tr>${tds}</tr></table>`;
 }
 
-function miniButton(label: string): string {
-  return `<div style="min-height:44px;border-radius:12px;border:1.5px solid #D9CFB6;background:#FFFDF8;text-align:center;font-size:12px;font-weight:700;line-height:1.2;padding:11px 4px;box-sizing:border-box;">${escapeHtml(label)}</div>`;
+function miniButton(label: string, href?: string): string {
+  const style =
+    "display:block;min-height:44px;border-radius:12px;border:1.5px solid #D9CFB6;background:#FFFDF8;text-align:center;font-size:12px;font-weight:700;line-height:1.2;padding:11px 4px;box-sizing:border-box;color:#1F2A24;text-decoration:none;";
+  return href
+    ? `<a href="${href}" style="${style}">${escapeHtml(label)}</a>`
+    : `<div style="${style}">${escapeHtml(label)}</div>`;
 }
 
 export function renderBasketEmailHtml({ items, mainAppLabel, manageUrl }: BasketEmailProps): string {
@@ -77,8 +82,12 @@ export function renderBasketEmailHtml({ items, mainAppLabel, manageUrl }: Basket
     </tr>
   </table>
   <p style="margin:10px 0 12px;font-size:16px;line-height:1.4;color:#3B453F;">${escapeHtml(message)}</p>
-  <div style="min-height:52px;border-radius:14px;background:#1E5B45;color:#FFFFFF;font-size:16px;font-weight:700;text-align:center;line-height:52px;margin-bottom:8px;">Order now on ${escapeHtml(mainAppLabel)}</div>
-  ${buttonRow([miniButton("I've ordered"), miniButton("Still have plenty"), miniButton("Add to next basket")])}
+  <a href="${it.links.order}" style="display:block;min-height:52px;border-radius:14px;background:#1E5B45;color:#FFFFFF;font-size:16px;font-weight:700;text-align:center;line-height:52px;margin-bottom:8px;text-decoration:none;">Order now on ${escapeHtml(mainAppLabel)}</a>
+  ${buttonRow([
+    miniButton("I've ordered", it.links.ordered),
+    miniButton("Still have plenty", it.links.plenty),
+    miniButton("Add to next basket", it.links.basket),
+  ])}
 </div>`;
     })
     .join("");

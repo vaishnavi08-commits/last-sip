@@ -1,5 +1,5 @@
 import { LADDER, WaitWindowKey, nameForCatalogId, possessive, snapToLadder } from "@/lib/catalog";
-import { todayISO } from "@/lib/dates";
+import { daysBetween, todayISO } from "@/lib/dates";
 
 export type PantryRow = {
   id: string;
@@ -23,12 +23,6 @@ export type ComputedItem = {
 export function itemName(it: { catalog_id: string | null; custom_name: string | null; pet_name: string | null }): string {
   const base = it.custom_name ?? nameForCatalogId(it.catalog_id) ?? "Item";
   return it.pet_name ? `${possessive(it.pet_name)} ${base.toLowerCase()}` : base;
-}
-
-function daysBetween(fromISO: string, toISO: string): number {
-  const from = new Date(fromISO + "T00:00:00Z").getTime();
-  const to = new Date(toISO + "T00:00:00Z").getTime();
-  return Math.round((to - from) / 86400000);
 }
 
 // The first-basket preview shown right after onboarding, when every item's

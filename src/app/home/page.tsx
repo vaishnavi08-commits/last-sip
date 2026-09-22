@@ -5,6 +5,7 @@ import { WINS, capitalize, type WaitWindowKey } from "@/lib/catalog";
 import { computeHomeItems, itemName, waitWindowText, type PantryRow } from "@/lib/pantry/compute";
 import { relativeDate } from "@/lib/dates";
 import { OrderedButton } from "./ordered-button";
+import { SendTestEmailButton } from "./send-test-email-button";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -129,6 +130,8 @@ export default async function HomePage() {
           ))}
         </div>
       )}
+
+      <SendTestEmailButton />
 
       <form action={signOut}>
         <button

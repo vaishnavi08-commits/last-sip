@@ -9,7 +9,12 @@ export default async function WelcomePage() {
   } = await supabase.auth.getUser();
 
   if (user) {
-    redirect("/home");
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("onboarding_completed_at")
+      .eq("id", user.id)
+      .single();
+    redirect(profile?.onboarding_completed_at ? "/home" : "/onboarding");
   }
 
   return (
